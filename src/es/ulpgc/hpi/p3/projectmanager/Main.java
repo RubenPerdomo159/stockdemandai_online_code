@@ -27,7 +27,8 @@ public class Main {
             case "get-company" -> getCompany(parts[1]);
             case "add-dish" -> addDish(parts);
             case "get-menu" -> getMenu(parts);
-            //case "get-stock" -> getStock(parts);
+            case "get-stock" -> getStock(parts);
+            case "get-company-stock" -> getCompanyStock(parts);
             case "help" -> help();
         }
 
@@ -51,6 +52,15 @@ public class Main {
         for (Company c : companyList) {
             if (c.getName().equals(companyName)) {
                 return c;
+            }
+        }
+        return null;
+    }
+
+    private static Dish findDish(String DishName, Company CompanyName) {
+        for (Dish d : CompanyName.getDishList()) {
+            if (d.getName().equals(DishName)){
+                return d;
             }
         }
         return null;
@@ -80,6 +90,38 @@ public class Main {
         }
         System.out.println("Company not found");
     }
+
+    private static void getStock(String[] parts) {
+
+        Company company = findCompany(parts[1]);
+        if (company != null){
+            Dish dish = findDish(parts[2], company);
+            if (dish != null){
+                System.out.println(dish);
+                return;
+            }
+            System.out.println("That dish is not in the menu");
+            return;
+        }
+        System.out.println("Company not found");
+    }
+
+    private static void getCompanyStock(String[] parts) {
+        Company company = findCompany(parts[1]);
+        if (company != null){
+            if (company.getDishList() != null) {
+                for(Dish d : company.getDishList()){
+                    System.out.println(d);
+                }
+                return;
+            }
+            System.out.println("There is no menu");
+            return;
+        }
+        System.out.println("Company not found");
+    }
+
+
 
     private static String askCommand(Scanner scanner) {
         System.out.println("Write a command\n" + "(Write \"help\" if you don't know any command)");

@@ -25,8 +25,16 @@ public class Dish {
         return stock;
     }
 
+    public String getStockText() {
+        return name + Integer.toString(stock);
+    }
+
     public void setStock(int stock) {
         this.stock = stock;
     }
 
+    @Override
+    public String toString() {
+        return "{" + "id:" + id + " - " + name + ", stock=" + stock + "}";
+    }
 }
