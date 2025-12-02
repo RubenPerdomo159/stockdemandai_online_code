@@ -23,13 +23,36 @@ public class Main {
     private static void processCommand(String command) {
         String[] parts = command.split(" ");
         switch (parts[0]) {
-            case "add-company" -> addCompany(parts);
+            case "add-company" -> {
+                if (parts.length == 3) {
+                    addCompany(parts);
+                }
+            }
             case "get-company" -> getCompany(parts[1]);
-            case "add-dish" -> addDish(parts);
-            case "get-menu" -> getMenu(parts);
-            case "get-stock" -> getStock(parts);
-            case "get-company-stock" -> getCompanyStock(parts);
+            case "add-dish" -> {
+                if (parts.length == 4) {
+                    if (parts[2].matches("\\d+")) {
+                        addDish(parts);
+                    }
+                }
+            }
+            case "get-menu" -> {
+                if (parts.length == 2) {
+                    getMenu(parts);
+                }
+            }
+            case "get-stock" -> {
+                if (parts.length == 3) {
+                    getStock(parts);
+                }
+            }
+            case "get-company-stock" -> {
+                if (parts.length == 2) {
+                    getCompanyStock(parts);
+                }
+            }
             case "help" -> help();
+            default -> System.out.println("Command not found");
         }
 
     }
