@@ -10,6 +10,7 @@ public class Company {
     private final String name;
     private final String address;
     private final List<Dish> dishList = new ArrayList<>();
+    private final List<Ingredients> ingredientList = new ArrayList<>();
 
     public Company(String name, String address) {
         this.id = ++ID;
@@ -43,6 +44,14 @@ public class Company {
 
     public String getAddress() {
         return address;
+    }
+
+    public void addIngredient(Ingredients ingredient){
+        this.ingredientList.add(ingredient);
+    }
+
+    public List<Ingredients> getIngredientsList() {
+        return new ArrayList<>(ingredientList);
     }
 
     @Override

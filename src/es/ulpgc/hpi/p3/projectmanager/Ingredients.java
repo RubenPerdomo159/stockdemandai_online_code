@@ -1,22 +1,25 @@
 package es.ulpgc.hpi.p3.projectmanager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Ingredients {
     private final String name;
-    private int supplies;
+    private int stock;
 
-    public Ingredients (String name, int supplies) {
+    public Ingredients (String name, int stock) {
         this.name = name;
-        this.supplies = supplies;
+        this.stock = stock;
     }
 
     public String getName() {return this.name;}
 
-    public int getSupplies() {return supplies;}
+    public int getStock() {return stock;}
 
-    public void setSupplies(int supplies) {
-        this.supplies = supplies;
+    public void setStock(int stock) {
+        this.stock = stock;
     }
 
     @Override
-    public String toString() {return  "{name: " + name + ", supplies: " + supplies + "}";}
+    public String toString() {return  name + ": " + stock;}
 }
