@@ -24,54 +24,72 @@ public class Main {
         String[] parts = command.split(" ");
         switch (parts[0]) {
             case "add-company" -> {
-                if (validate(parts, 3, -1)) {
+                if (Validation.validate(parts, 3, -1)) {
                     addCompany(parts);
                 }
             }
             case "get-company" -> {
-                if (validate(parts, 1, -1)) {
+                if (Validation.validate(parts, 2, -1)) {
                     getCompany(parts[1]);
                 }
             }
             case "add-dish" -> {
-                if (validate(parts, 3, -1)) {
+                if (Validation.validate(parts, 3, -1)) {
                     addDish(parts);
                 }
             }
             case "add-ingredient" -> {
-                if (validate(parts, 4, 2)) {
+                if (Validation.validate(parts, 4, 2)) {
                     addIngredient(parts);
                 }
             }
             case "add-dish-ingredient" -> {
-                if (validate(parts, 4, -1)) {
+                if (Validation.validate(parts, 4, -1)) {
                     addDishIngredient(parts);
                 }
             }
             case "get-menu" -> {
-                if (validate(parts, 2, -1)) {
+                if (Validation.validate(parts, 2, -1)) {
                     getMenu(parts);
                 }
             }
             case "get-company-ingredients" -> {
-                if (validate(parts, 2, -1)) {
+                if (Validation.validate(parts, 2, -1)) {
                     getCompanyIngredients(parts);
                 }
             }
 
             case "get-stock" -> {
-                if (validate(parts, 3, -1)) {
+                if (Validation.validate(parts, 3, -1)) {
                     getStock(parts);
                 }
             }
             case "get-dish-ingredients" -> {
-                if (validate(parts, 3, -1)) {
+                if (Validation.validate(parts, 3, -1)) {
                     getDishIngredients(parts);
                 }
             }
 
+            case "update-stock" -> {
+                if (Validation.validate(parts, 4, 2)) {
+                    updateStock(parts);
+                }
+            }
+
+            case "get-company-stock" -> {
+                if (Validation.validate(parts, 2, -1)) {
+                    getCompanyStock(parts);
+                }
+            }
+
+            case "make-prediction" -> {
+                if (Validation.validate(parts, 3, -1)) {
+                    makePrediction(parts);
+                }
+            }
+
             case "help" -> {
-                if (validate(parts, 1, -1)) {
+                if (Validation.validate(parts, 1, -1)) {
                     help();
                 }
             }
@@ -102,19 +120,6 @@ public class Main {
         dish.addIngredient(ingredient);
         System.out.println("Ingredient added to dish successfully");
     }
-
-
-    public static boolean validate(String[] parts, int expectedLength, int positionToCheck) {
-        if (parts.length != expectedLength) {
-            System.out.println("Incorrect command length");
-            return false;
-        } else if (positionToCheck >= 0 && !parts[positionToCheck].matches("\\d+")) {
-            System.out.println("Incorrect attribute type");
-            return false;
-        }
-
-        return true;
-        }
 
     private static void addCompany(String[] parts) {
         companyList.add(new Company(parts[1], parts[2]));
@@ -242,11 +247,78 @@ public class Main {
         System.out.println("Company not found");
     }
 
+    private static void updateStock(String[] parts) {
+        Company company = findCompany(parts[3]);
+        if (company == null) {
+            System.out.println("Company not found");
+            return;
+        }
+
+        Ingredients ingredient = findIngredient(parts[1], company);
+        if (ingredient == null) {
+            System.out.println("Ingredient not found");
+            return;
+        }
+
+        int newStock = Integer.parseInt(parts[2]);
+        ingredient.setStock(newStock);
+
+        System.out.println("Stock updated: " + ingredient.getName() + " now has " + newStock);
+    }
+
+    private static void getCompanyStock(String[] parts) {
+        Company company = findCompany(parts[1]);
+        if (company == null) {
+            System.out.println("Company not found");
+            return;
+        }
+
+        List<Ingredients> ingredients = company.getIngredientsList();
+        if (ingredients.isEmpty()) {
+            System.out.println("There are no ingredients");
+            return;
+        }
+
+        System.out.println("Stock of " + company.getName() + ":");
+        for (Ingredients i : ingredients) {
+            System.out.println(" - " + i.getName() + ": " + i.getStock());
+        }
+    }
+
+    private static void makePrediction(String[] parts) {
+        Company company = findCompany(parts[2]);
+        if (company == null) {
+            System.out.println("Company not found");
+            return;
+        }
+
+        Dish dish = findDish(parts[1], company);
+        if (dish == null) {
+            System.out.println("Dish not found");
+            return;
+        }
+
+        List<Ingredients> ingredients = dish.getIngredients();
+        if (ingredients.isEmpty()) {
+            System.out.println("The dish has no ingredients defined");
+            return;
+        }
+
+        int maxPlates = Integer.MAX_VALUE;
+
+        for (Ingredients ingredient : ingredients) {
+            if (ingredient.getStock() < maxPlates) {
+                maxPlates = ingredient.getStock();
+            }
+        }
+
+        System.out.println("You can prepare " + maxPlates + " dishes");
+    }
+
     private static String askCommand(Scanner scanner) {
         System.out.println("Write a command\n" + "(Write \"help\" if you don't know any command)");
         return scanner.nextLine().trim();
     }
-
 
     private static void help() {
         System.out.println("""
@@ -260,9 +332,9 @@ public class Main {
                 get-dish-ingredients: Return the ingredients of a dish (command dishName companyName)
                 get-menu: Return the menu of a company (command companyName)
                 get-stock: Return the stock of a ingredient (command ingredientName companyName)
-                *update-stock: Update the stock of an ingredient (command ingredientName newStock companyName)
-                *get-company-stock: Return the stock of a company (command companyName)
-                *make-prediction: Make a prediction of the number of dishes you can make (command dishName companyName)
+                update-stock: Update the stock of an ingredient (command ingredientName newStock companyName)
+                get-company-stock: Return the stock of a company (command companyName)
+                make-prediction: Make a prediction of the number of dishes you can make (command dishName companyName)
                 """);
     }
 }

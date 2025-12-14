@@ -27,6 +27,10 @@ public class Dish {
         return ingredientsName;
     }
 
+    public List<Ingredients> getIngredients() {
+        return ingredients;
+    }
+
     public String getName() {
         return name;
     }
