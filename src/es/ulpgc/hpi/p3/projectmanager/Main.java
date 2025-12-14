@@ -43,16 +43,33 @@ public class Main {
                     addIngredient(parts);
                 }
             }
+            case "add-dish-ingredient" -> {
+                if (validate(parts, 4, -1)) {
+                    addDishIngredient(parts);
+                }
+            }
             case "get-menu" -> {
                 if (validate(parts, 2, -1)) {
                     getMenu(parts);
                 }
             }
+            case "get-company-ingredients" -> {
+                if (validate(parts, 2, -1)) {
+                    getCompanyIngredients(parts);
+                }
+            }
+
             case "get-stock" -> {
                 if (validate(parts, 3, -1)) {
                     getStock(parts);
                 }
             }
+            case "get-dish-ingredients" -> {
+                if (validate(parts, 3, -1)) {
+                    getDishIngredients(parts);
+                }
+            }
+
             case "help" -> {
                 if (validate(parts, 1, -1)) {
                     help();
@@ -62,6 +79,30 @@ public class Main {
         }
 
     }
+
+    private static void addDishIngredient(String[] parts) {
+        Company company = findCompany(parts[3]);
+        if (company == null) {
+            System.out.println("Company not found");
+            return;
+        }
+
+        Dish dish = findDish(parts[2], company);
+        if (dish == null) {
+            System.out.println("Dish not found in the company");
+            return;
+        }
+
+        Ingredients ingredient = findIngredient(parts[1], company);
+        if (ingredient == null) {
+            System.out.println("Ingredient not found in company");
+            return;
+        }
+
+        dish.addIngredient(ingredient);
+        System.out.println("Ingredient added to dish successfully");
+    }
+
 
     public static boolean validate(String[] parts, int expectedLength, int positionToCheck) {
         if (parts.length != expectedLength) {
@@ -166,6 +207,40 @@ public class Main {
         System.out.println("Company not found");
     }
 
+    private static void getDishIngredients(String[] parts) {
+        Company company = findCompany(parts[2]);
+        if (company != null) {
+            Dish dish = findDish(parts[1], company);
+            if (dish != null) {
+                List<String> ingredientNames = dish.getIngredientsName();
+                if (!ingredientNames.isEmpty()) {
+                    System.out.print("Ingredients of " + dish.getName() + ": ");
+                    System.out.println(String.join(", ", ingredientNames));
+                    return;
+                }
+                System.out.println("The dish has no ingredients");
+                return;
+            }
+            System.out.println("Dish not found in the menu");
+            return;
+        }
+        System.out.println("Company not found");
+    }
+
+    private static void getCompanyIngredients(String[] parts) {
+        Company company = findCompany(parts[1]);
+        if (company != null) {
+            List<String> ingredientNames = company.getIngredientsName();
+            if (!ingredientNames.isEmpty()) {
+                System.out.print(company.getName() + " has: ");
+                System.out.println(String.join(", ", ingredientNames));
+                return;
+            }
+            System.out.println("There are no ingredients");
+            return;
+        }
+        System.out.println("Company not found");
+    }
 
     private static String askCommand(Scanner scanner) {
         System.out.println("Write a command\n" + "(Write \"help\" if you don't know any command)");
@@ -180,12 +255,14 @@ public class Main {
                 get-company: Return a company with its name (command name)
                 add-dish: Add a dish to a company (command name companyName)
                 add-ingredient: Add a ingredient to a company (command name stock companyName)
-                *get-ingredients: Return the ingredients of a company (command companyName)
+                add-dish-ingredient: Add a ingredient to a dish (command ingredientName dishName companyName)
+                get-company-ingredients: Return the ingredients of a company (command companyName)
+                get-dish-ingredients: Return the ingredients of a dish (command dishName companyName)
                 get-menu: Return the menu of a company (command companyName)
                 get-stock: Return the stock of a ingredient (command ingredientName companyName)
+                *update-stock: Update the stock of an ingredient (command ingredientName newStock companyName)
                 *get-company-stock: Return the stock of a company (command companyName)
                 *make-prediction: Make a prediction of the number of dishes you can make (command dishName companyName)
                 """);
     }
-
 }

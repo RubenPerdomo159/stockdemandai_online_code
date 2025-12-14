@@ -54,6 +54,14 @@ public class Company {
         return new ArrayList<>(ingredientList);
     }
 
+    public List<String> getIngredientsName() {
+        List<String> ingredientsName = new ArrayList<>();
+        for (Ingredients i : ingredientList) {
+            ingredientsName.add(i.getName());
+        }
+        return ingredientsName;
+    }
+
     @Override
     public String toString() {
         return "Company{" + "id=" + id + ", name=" + name + ", address=" + address + '}';
