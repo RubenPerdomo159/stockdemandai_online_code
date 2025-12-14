@@ -1,8 +1,5 @@
 package es.ulpgc.hpi.p3.projectmanager;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Ingredients {
     private final String name;
     private int stock;
